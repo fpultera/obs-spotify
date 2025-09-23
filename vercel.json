@@ -1,7 +1,13 @@
 {
   "functions": {
     "api/*.py": {
-      "runtime": "python3.9"
+      "runtime": "vercel-python@0.13.2"
     }
-  }
+  },
+  "routes": [
+    { "src": "/api/login", "dest": "/api/login.py" },
+    { "src": "/api/callback", "dest": "/api/callback.py" },
+    { "src": "/api/state", "dest": "/api/state.py" },
+    { "src": "/api/widget", "dest": "/api/widget.py" }
+  ]
 }
