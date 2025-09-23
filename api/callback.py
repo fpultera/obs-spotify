@@ -1,13 +1,15 @@
 import os
 from spotipy.oauth2 import SpotifyOAuth
-from flask import Response, request
+from flask import Response
 
+# Variables de entorno
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI", "https://tuapp.vercel.app/api/callback")
+REDIRECT_URI = os.getenv("REDIRECT_URI", "https://obs-spotify.vercel.app/api/callback")
 SCOPE = "user-read-currently-playing user-read-playback-state"
 
-def handler(req):
+def handler(request):
+    # Crear el objeto OAuth
     sp_oauth = SpotifyOAuth(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -16,9 +18,10 @@ def handler(req):
         cache_path="/tmp/.cache-spotify-widget"
     )
 
-    # Obtener el 'code' de la query string
-    code = req.args.get("code")
+    # Obtener el 'code' que envía Spotify a la callback
+    code = request.args.get("code")
     if code:
+        # Intercambiar el code por un access token
         token_info = sp_oauth.get_access_token(code, as_dict=True)
         if token_info and "access_token" in token_info:
             return Response("✅ Autenticado con Spotify. Ahora podés ir a /api/widget")

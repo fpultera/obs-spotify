@@ -9,14 +9,18 @@ REDIRECT_URI = os.getenv("REDIRECT_URI", "https://tuapp.vercel.app/api/callback"
 SCOPE = "user-read-currently-playing user-read-playback-state"
 
 def handler(request):
-    sp_oauth = SpotifyOAuth(client_id=CLIENT_ID,
-                            client_secret=CLIENT_SECRET,
-                            redirect_uri=REDIRECT_URI,
-                            scope=SCOPE,
-                            cache_path="/tmp/.cache-spotify-widget")
+    sp_oauth = SpotifyOAuth(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        redirect_uri=REDIRECT_URI,
+        scope=SCOPE,
+        cache_path="/tmp/.cache-spotify-widget"
+    )
+
     token_info = sp_oauth.get_cached_token()
     if not token_info:
         return jsonify({"error": "Not authenticated. Go to /api/login"})
+
     spotify = spotipy.Spotify(auth_manager=sp_oauth)
     now = spotify.current_user_playing_track()
     if now and now.get("item"):
